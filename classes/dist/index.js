@@ -1,91 +1,118 @@
 "use strict";
 console.log("Its ts getting compiled to js");
 console.log("Typing typescript");
-
 class Player {
-
-  // This property will exists in Player class not on individual instances/objects of the class
-  static description = "Player in our game";
-  // we can also use this with a method
-  static secret() {
-    console.log("Cigaratte method invoked");
-  }
-
-  // class default fields
-  #score = 0; // any property which starts with a # should only be usable inside of a JS class (makes the field private)
-  #numLives = 9;
-
-  // A default constructor already defined in JS
-  // We need constructor to create an object of the class
-  constructor(first, last){
-    console.log("New Player Object created");
-    this.first = first;
-    this.last = last;
-  }
-
-  taunt(){
-    console.log("NOOOB");
-  }
-
-  loseLife() {
-    this.numLives -= 1;
-  }
-
-  // getter function
-  getScore() {
-    return this.#score;
-  }
-
-  // setter function
-  updateScore(newScore) {
-    this.#score = newScore;
-  }
-
-  // getter property of class its not a function
-  get fullName() {
-    return `${this.first} ${this.last}`;
-  }
-
-  // setting property of a class again not a function
-  set newScore(newScore) {
-    if (newScore <0) throw new Error("score cannot be less than 0");
-
-    this.#score = newScore;
-  }
+    // readonly fields cannot be changed/updated/modified after object creation
+    // public and private modifiers only exists in typescript
+    // public is always set by default
+    /* readonly first: string;
+       public readonly last: string;
+    
+      
+       constructor(first: string, last: string) {
+         this.first = first;
+         this.last = last;
+     }
+    
+      we can also write the constructor in shorthand like */
+    constructor(first, last) {
+        this.first = first;
+        this.last = last;
+        // protected can be accessed from the class and any child class
+        this.score = 0;
+    }
+    // private means we can only access this inside a class
+    // private methods
+    secretMethod() {
+        console.log("Secret Method Using getter function!!!");
+    }
+    getSecretMethod() {
+        console.log("idhar se hi ayega");
+        return this.secretMethod();
+    }
+    // getters
+    get fullName() {
+        return `${this.first} ${this.last}`;
+    }
+    get displayScore() {
+        return this.score;
+    }
+    // setters
+    set newScore(newScore) {
+        if (newScore < 0) {
+            throw new Error("Score cannot be assigned less than 0");
+        }
+        this.score = newScore;
+    }
 }
-
-// Accessing static property
-console.log(Player.description);
-Player.secret();
-
-const player1 = new Player("chutki", "biral");
-console.log(player1);
-player1.taunt();
-console.log(player1.first);
-// console.log(player1.numLives);
-player1.loseLife()
-// console.log(player1.numLives);
-
-// console.log(player1.#score); not allowed
-console.log(player1.getScore())
-player1.updateScore(10);
-console.log(player1.getScore());
-console.log(player1.fullName);
-player1.newScore = 1234;
-console.log(player1.getScore());
-
-
-// Class inheritance
-class AdminPlayer extends Player {
-  // This class will have all functionalities of PLayer class
-  constructor(first, last, powers) {
-    super(first, last);
-    this.powers = powers;
-  }
-
+const chutki = new Player("chutki", "biral");
+console.log(chutki);
+// console.log(chutki.score) not allowed as score field is set to private
+// chutki.first = "Chutki Mutki" not allowed
+chutki.getSecretMethod();
+console.log(chutki.fullName);
+// calling getters and setters
+console.log("default score ", chutki.displayScore);
+chutki.newScore = 420;
+console.log("new Score ", chutki.displayScore);
+class SuperPlayer extends Player {
+    constructor() {
+        super(...arguments);
+        this.isAdmin = true;
+    }
+    maxScore() {
+        this.score = 999999999;
+    }
 }
-
-const admin = new AdminPlayer("chitiya", "gamer", ["delete account", "ban account", "restore world"]);
-console.log("Below are the op from child class ", admin);
-console.log(admin.getScore()); // it has access to its parent class properties
-admin.taunt();
+class Bike {
+    constructor(color) {
+        this.color = color;
+    }
+}
+class Jacket {
+    constructor(brand, color) {
+        this.brand = brand;
+        this.color = color;
+    }
+    print() {
+        console.log(`Jacket is ${this.color} of ${this.brand}`);
+    }
+}
+const bike1 = new Bike("red");
+const jacket1 = new Jacket("denim", "black");
+jacket1.print();
+// abstract classes are classes which you cant make any object of
+// they are used for inheritance generally
+class Employee {
+    constructor(first, last) {
+        this.first = first;
+        this.last = last;
+    }
+    greet() {
+        console.log(`Hello ${this.first} ${this.last}`);
+    }
+}
+class FullTimeEmployee extends Employee {
+    constructor(first, last, salary) {
+        super(first, last);
+        this.first = first;
+        this.last = last;
+        this.salary = salary;
+    }
+    getPay() {
+        return 24346548;
+    }
+}
+class PartTimeEmployee extends Employee {
+    constructor(first, last, salary) {
+        super(first, last);
+        this.first = first;
+        this.last = last;
+        this.salary = salary;
+    }
+    getPay() {
+        return 4561365;
+    }
+}
+const biralChutki = new FullTimeEmployee("Chutki", "Biral", 123456);
+const biralJhuli = new FullTimeEmployee("Jhuli", "Biral", 098765);
